@@ -109,6 +109,22 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `petmatch_dev`.`pet_type`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `petmatch_dev`.`pet_type` (
+  `id_pet_type` INT NOT NULL AUTO_INCREMENT,
+  `pet_type` VARCHAR(100) NOT NULL,
+  `description` VARCHAR(500) NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` DATETIME NULL,
+  `is_active` TINYINT NULL DEFAULT 1,
+  PRIMARY KEY (`id_pet_type`),
+  UNIQUE INDEX `breed_UNIQUE` (`pet_type` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `petmatch_dev`.`breed`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `petmatch_dev`.`breed` (
@@ -119,8 +135,15 @@ CREATE TABLE IF NOT EXISTS `petmatch_dev`.`breed` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` DATETIME NULL,
   `is_active` TINYINT NULL DEFAULT 1,
+  `pet_type_breed` INT NOT NULL,
   PRIMARY KEY (`id_breed`),
-  UNIQUE INDEX `breed_UNIQUE` (`breed` ASC) VISIBLE)
+  UNIQUE INDEX `breed_UNIQUE` (`breed` ASC) VISIBLE,
+  INDEX `fk_breed_pet_type1_idx` (`pet_type_breed` ASC) VISIBLE,
+  CONSTRAINT `fk_breed_pet_type1`
+    FOREIGN KEY (`pet_type_breed`)
+    REFERENCES `petmatch_dev`.`pet_type` (`id_pet_type`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 

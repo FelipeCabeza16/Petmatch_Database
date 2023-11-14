@@ -1571,22 +1571,28 @@ INSERT INTO social_account (id_social_account, uid, id_owner) VALUES
 -- Features
 
 
-
-
+-- Pet type 
+INSERT INTO `pet_type` (`id_pet_type`, `pet_type`)
+VALUES
+(3000, 'Perro'),
+(3001, 'Gato');
 
 -- Breed 
 
-
-INSERT INTO `breed` (`id_breed`, `breed`)
+INSERT INTO `breed` (`id_breed`, `breed`, `pet_type_breed`)
 VALUES
-(2000, 'Pug'),
-(2001, 'Labrador'),
-(2002, 'Chiwawa'),
-(2003, 'Buldog Francés'),
-(2004, 'Doberman');
+(2000, 'Pug', 3000),
+(2001, 'Labrador', 3000),
+(2002, 'Chiwawa', 3000),
+(2003, 'Buldog Francés', 3000),
+(2004, 'Doberman', 3000),
+(2005, 'Persa', 3001);
+
+
+
+
 
 -- Pets
-
 
 INSERT INTO `petmatch_dev`.`pet` 
 (`id_pet`, `owner_pet`, `name`, `gender`, `breed_pet`)
