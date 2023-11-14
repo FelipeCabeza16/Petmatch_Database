@@ -74,12 +74,53 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `petmatch_dev`.`owner`
+-- Table `petmatch_dev`.`document_type`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `petmatch_dev`.`owner` (
-  `id_owner` INT NOT NULL AUTO_INCREMENT,
-  `names` VARCHAR(200) NOT NULL,
-  `last_names` VARCHAR(200) NULL,
+CREATE TABLE IF NOT EXISTS `petmatch_dev`.`document_type` (
+  `id_document_type` INT NOT NULL,
+  `document_type` VARCHAR(100) NOT NULL,
+  `description` VARCHAR(45) NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` DATETIME NULL,
+  `is_active` TINYINT NULL DEFAULT 1,
+  `abbreviate` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`id_document_type`),
+  UNIQUE INDEX `breed_UNIQUE` (`document_type` ASC) VISIBLE,
+  UNIQUE INDEX `abbreviate_UNIQUE` (`abbreviate` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `petmatch_dev`.`document`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `petmatch_dev`.`document` (
+  `id_document` INT NOT NULL,
+  `document` VARCHAR(100) NOT NULL,
+  `description` VARCHAR(45) NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` DATETIME NULL,
+  `is_active` TINYINT NULL DEFAULT 1,
+  `document_type_document` INT NOT NULL,
+  PRIMARY KEY (`id_document`),
+  UNIQUE INDEX `breed_UNIQUE` (`document` ASC) VISIBLE,
+  INDEX `fk_document_document_type1_idx` (`document_type_document` ASC) VISIBLE,
+  CONSTRAINT `fk_document_document_type1`
+    FOREIGN KEY (`document_type_document`)
+    REFERENCES `petmatch_dev`.`document_type` (`id_document_type`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `petmatch_dev`.`user`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `petmatch_dev`.`user` (
+  `id_user` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(200) NOT NULL,
+  `last_name` VARCHAR(200) NULL,
   `phone` VARCHAR(20) NULL,
   `password` VARCHAR(200) NOT NULL,
   `email` VARCHAR(500) NULL,
@@ -88,21 +129,28 @@ CREATE TABLE IF NOT EXISTS `petmatch_dev`.`owner` (
   `deleted_at` DATETIME NULL,
   `birthdate` DATE NULL,
   `is_active` TINYINT NOT NULL DEFAULT 1,
-  `role_owner` INT NOT NULL,
-  `subscription_owner` INT NOT NULL,
-  PRIMARY KEY (`id_owner`),
+  `role_user` INT NOT NULL,
+  `subscription_user` INT NOT NULL,
+  `document_user` INT NOT NULL,
+  PRIMARY KEY (`id_user`),
   UNIQUE INDEX `phone_UNIQUE` (`phone` ASC) VISIBLE,
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
-  INDEX `fk_owner_role1_idx` (`role_owner` ASC) VISIBLE,
-  INDEX `fk_owner_subscription1_idx` (`subscription_owner` ASC) VISIBLE,
+  INDEX `fk_owner_role1_idx` (`role_user` ASC) VISIBLE,
+  INDEX `fk_owner_subscription1_idx` (`subscription_user` ASC) VISIBLE,
+  INDEX `fk_user_document1_idx` (`document_user` ASC) VISIBLE,
   CONSTRAINT `fk_owner_role1`
-    FOREIGN KEY (`role_owner`)
+    FOREIGN KEY (`role_user`)
     REFERENCES `petmatch_dev`.`role` (`id_role`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_owner_subscription1`
-    FOREIGN KEY (`subscription_owner`)
+    FOREIGN KEY (`subscription_user`)
     REFERENCES `petmatch_dev`.`subscription` (`id_subscription`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_user_document1`
+    FOREIGN KEY (`document_user`)
+    REFERENCES `petmatch_dev`.`document` (`id_document`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -152,7 +200,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `petmatch_dev`.`pet` (
   `id_pet` INT NOT NULL AUTO_INCREMENT,
-  `owner_pet` INT NOT NULL,
+  `user_pet` INT NOT NULL,
   `name` VARCHAR(100) NOT NULL,
   `gender` VARCHAR(1) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -161,11 +209,11 @@ CREATE TABLE IF NOT EXISTS `petmatch_dev`.`pet` (
   `is_active` TINYINT NOT NULL DEFAULT 1,
   `breed_pet` INT NOT NULL,
   PRIMARY KEY (`id_pet`),
-  INDEX `fk_pet_owner_idx` (`owner_pet` ASC) VISIBLE,
+  INDEX `fk_pet_owner_idx` (`user_pet` ASC) VISIBLE,
   INDEX `fk_pet_breed1_idx` (`breed_pet` ASC) VISIBLE,
   CONSTRAINT `fk_pet_owner`
-    FOREIGN KEY (`owner_pet`)
-    REFERENCES `petmatch_dev`.`owner` (`id_owner`)
+    FOREIGN KEY (`user_pet`)
+    REFERENCES `petmatch_dev`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_pet_breed1`
@@ -287,7 +335,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `petmatch_dev`.`message` (
   `id_message` INT NOT NULL AUTO_INCREMENT,
-  `sender_owner` INT NOT NULL,
+  `sender_user` INT NOT NULL,
   `message_chat` INT NOT NULL,
   `message` VARCHAR(800) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -295,11 +343,11 @@ CREATE TABLE IF NOT EXISTS `petmatch_dev`.`message` (
   `deleted_at` DATETIME NULL,
   `is_active` TINYINT NOT NULL DEFAULT 1,
   INDEX `fk_owner_has_chat_chat1_idx` (`message_chat` ASC) VISIBLE,
-  INDEX `fk_owner_has_chat_owner1_idx` (`sender_owner` ASC) VISIBLE,
+  INDEX `fk_owner_has_chat_owner1_idx` (`sender_user` ASC) VISIBLE,
   PRIMARY KEY (`id_message`),
-  CONSTRAINT `fk_owner_has_chat_owner1`
-    FOREIGN KEY (`sender_owner`)
-    REFERENCES `petmatch_dev`.`owner` (`id_owner`)
+  CONSTRAINT `fk_user_has_chat_owner1`
+    FOREIGN KEY (`sender_user`)
+    REFERENCES `petmatch_dev`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_owner_has_chat_chat1`
@@ -315,7 +363,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `petmatch_dev`.`message` (
   `id_message` INT NOT NULL AUTO_INCREMENT,
-  `sender_owner` INT NOT NULL,
+  `sender_user` INT NOT NULL,
   `message_chat` INT NOT NULL,
   `message` VARCHAR(800) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -323,11 +371,11 @@ CREATE TABLE IF NOT EXISTS `petmatch_dev`.`message` (
   `deleted_at` DATETIME NULL,
   `is_active` TINYINT NOT NULL DEFAULT 1,
   INDEX `fk_owner_has_chat_chat1_idx` (`message_chat` ASC) VISIBLE,
-  INDEX `fk_owner_has_chat_owner1_idx` (`sender_owner` ASC) VISIBLE,
+  INDEX `fk_owner_has_chat_owner1_idx` (`sender_user` ASC) VISIBLE,
   PRIMARY KEY (`id_message`),
-  CONSTRAINT `fk_owner_has_chat_owner1`
-    FOREIGN KEY (`sender_owner`)
-    REFERENCES `petmatch_dev`.`owner` (`id_owner`)
+  CONSTRAINT `fk_user_has_chat_owner1`
+    FOREIGN KEY (`sender_user`)
+    REFERENCES `petmatch_dev`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_owner_has_chat_chat1`
@@ -344,18 +392,18 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `petmatch_dev`.`photo` (
   `id_photo` INT NOT NULL AUTO_INCREMENT,
   `url` VARCHAR(800) NOT NULL,
-  `owner_photo` INT NULL,
+  `user_photo` INT NULL,
   `pet_photo` INT NULL,
   `description` VARCHAR(500) NULL,
   `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `is_active` TINYINT NULL DEFAULT 1,
   PRIMARY KEY (`id_photo`),
-  INDEX `fk_photo_owner1_idx` (`owner_photo` ASC) VISIBLE,
+  INDEX `fk_photo_owner1_idx` (`user_photo` ASC) VISIBLE,
   INDEX `fk_photo_pet1_idx` (`pet_photo` ASC) VISIBLE,
   CONSTRAINT `fk_photo_owner1`
-    FOREIGN KEY (`owner_photo`)
-    REFERENCES `petmatch_dev`.`owner` (`id_owner`)
+    FOREIGN KEY (`user_photo`)
+    REFERENCES `petmatch_dev`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_photo_pet1`
@@ -372,16 +420,16 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `petmatch_dev`.`auth` (
   `id_auth` INT NOT NULL AUTO_INCREMENT,
   `token` VARCHAR(800) NOT NULL,
-  `token_owner` INT NOT NULL,
+  `token_user` INT NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` DATETIME NULL,
   `is_active` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id_auth`),
-  INDEX `fk_auth_owner1_idx` (`token_owner` ASC) VISIBLE,
+  INDEX `fk_auth_owner1_idx` (`token_user` ASC) VISIBLE,
   CONSTRAINT `fk_auth_owner1`
-    FOREIGN KEY (`token_owner`)
-    REFERENCES `petmatch_dev`.`owner` (`id_owner`)
+    FOREIGN KEY (`token_user`)
+    REFERENCES `petmatch_dev`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -491,14 +539,14 @@ CREATE TABLE IF NOT EXISTS `petmatch_dev`.`address` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` DATETIME NULL,
   `is_active` TINYINT NOT NULL DEFAULT 1,
-  `owner_address` INT NOT NULL,
+  `user_address` INT NOT NULL,
   `city_address` INT NOT NULL,
   PRIMARY KEY (`id_address`),
-  INDEX `fk_address_owner1_idx` (`owner_address` ASC) VISIBLE,
+  INDEX `fk_address_owner1_idx` (`user_address` ASC) VISIBLE,
   INDEX `fk_address_city1_idx` (`city_address` ASC) VISIBLE,
   CONSTRAINT `fk_address_owner1`
-    FOREIGN KEY (`owner_address`)
-    REFERENCES `petmatch_dev`.`owner` (`id_owner`)
+    FOREIGN KEY (`user_address`)
+    REFERENCES `petmatch_dev`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_address_city1`
@@ -561,10 +609,10 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `petmatch_dev`.`social_account` (
   `id_social_account` INT NOT NULL AUTO_INCREMENT,
-  `id_owner` INT NOT NULL,
+  `id_user` INT NOT NULL,
   `uid` VARCHAR(200) NOT NULL,
-  PRIMARY KEY (`id_social_account`, `id_owner`),
-  INDEX `fk_social_account_provider_has_owner_owner1_idx` (`id_owner` ASC) VISIBLE,
+  PRIMARY KEY (`id_social_account`, `id_user`),
+  INDEX `fk_social_account_provider_has_owner_owner1_idx` (`id_user` ASC) VISIBLE,
   INDEX `fk_social_account_provider_has_owner_social_account_provide_idx` (`id_social_account` ASC) VISIBLE,
   CONSTRAINT `fk_social_account_provider_has_owner_social_account_provider1`
     FOREIGN KEY (`id_social_account`)
@@ -572,8 +620,8 @@ CREATE TABLE IF NOT EXISTS `petmatch_dev`.`social_account` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_social_account_provider_has_owner_owner1`
-    FOREIGN KEY (`id_owner`)
-    REFERENCES `petmatch_dev`.`owner` (`id_owner`)
+    FOREIGN KEY (`id_user`)
+    REFERENCES `petmatch_dev`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -600,10 +648,10 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `petmatch_dev`.`social_account` (
   `id_social_account` INT NOT NULL AUTO_INCREMENT,
-  `id_owner` INT NOT NULL,
+  `id_user` INT NOT NULL,
   `uid` VARCHAR(200) NOT NULL,
-  PRIMARY KEY (`id_social_account`, `id_owner`),
-  INDEX `fk_social_account_provider_has_owner_owner1_idx` (`id_owner` ASC) VISIBLE,
+  PRIMARY KEY (`id_social_account`, `id_user`),
+  INDEX `fk_social_account_provider_has_owner_owner1_idx` (`id_user` ASC) VISIBLE,
   INDEX `fk_social_account_provider_has_owner_social_account_provide_idx` (`id_social_account` ASC) VISIBLE,
   CONSTRAINT `fk_social_account_provider_has_owner_social_account_provider1`
     FOREIGN KEY (`id_social_account`)
@@ -611,8 +659,8 @@ CREATE TABLE IF NOT EXISTS `petmatch_dev`.`social_account` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_social_account_provider_has_owner_owner1`
-    FOREIGN KEY (`id_owner`)
-    REFERENCES `petmatch_dev`.`owner` (`id_owner`)
+    FOREIGN KEY (`id_user`)
+    REFERENCES `petmatch_dev`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

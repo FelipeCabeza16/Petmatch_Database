@@ -1,4 +1,33 @@
 USE petmatch_dev;
+
+
+INSERT INTO `document_type` 
+(`id_document_type`, `document_type`, `abbreviate`, `description`)
+VALUES
+(10, 'CÉDULA DE CIUDADANÍA', 'CC', 'Cédula de Ciudadanía'),
+(20, 'CÉDULA DE EXTRANJERÍA', 'CE', 'Cédula de Extranjería'),
+(30, 'PASAPORTE', 'PA', 'Pasaporte'),
+(40, 'TARJETA DE IDENTIDAD', 'TI', 'Tarjeta de Identidad'),
+(50, 'REGISTRO CIVIL', 'RC', 'Registro Civil'),
+(60, 'NIT', 'NIT','Número de informacion tributaria'),
+(70, 'NUIP', 'NUIP','Número único de identificación personal,');
+
+
+INSERT INTO `document` 
+(`id_document`, `document`, `document_type_document`)
+VALUES 
+(100, '1121952226', 10),
+(200, '1234567893', 20),
+(300, '9876543210', 30),
+(400, '5556667778', 40),
+(500, '1112223334', 50),
+(600, '9998887776', 60),
+(700, '4445556662', 70),
+(800, '7778889991', 10),
+(900, '8887776660', 20),
+(1000, '2223334445', 30);
+
+
 -- Country populate
 INSERT INTO `country` (`id_country`, `iso`, `country`, `iso3`, `num_code`, `phone_code`) VALUES
 (1, 'AF', 'Afganistán', 'AFG', 4, 93),
@@ -1410,24 +1439,24 @@ VALUES
 (3, 'unlimited_reach', 'Unlimited Reach'),
 (4, 'superlikes', 'Superlikes');
 
-INSERT INTO `petmatch_dev`.`owner` (`id_owner`, `names`, `last_names`, `phone`, `password`, `email`, `birthdate`, `subscription_owner`, `role_owner`)
+INSERT INTO `petmatch_dev`.`user` (`id_user`, `name`, `last_name`, `phone`, `password`, `email`, `birthdate`, `subscription_user`, `role_user`, `document_user`)
 VALUES
-(1, 'Felipe', 'Cabeza', '3022901384', 'hola1234', 'felipe@gmail.com', '1998-05-05', 3, 100),
-(2, 'Maria', 'Gomez', '9876543210', 'securepass', 'maria@example.com', '1985-05-15', 1, 200),
-(3, 'Carlos', 'Lopez', '5551112233', 'pass123', 'carlos@example.com', '1982-11-30', 2, 300),
-(4, 'Laura', 'Rodriguez', '7778889999', 'mypassword', 'laura@example.com', '1995-07-22', 1, 300),
-(5, 'Pedro', 'Martinez', '1112223333', 'p@ssw0rd', 'pedro@example.com', '1988-04-10', 1, 300),
-(6, 'Ana', 'Santos', '4445556666', 'secure123', 'ana@example.com', '1992-09-18', 1, 300),
-(7, 'Luis', 'Hernandez', '9990001111', 'luispass', 'luis@example.com', '1980-03-05', 2, 300),
-(8, 'Elena', 'Fernandez', '6667778888', 'myp@ss', 'elena@example.com', '1998-12-12', 1, 300),
-(9, 'Alejandro', 'Ramirez', '3334445555', 'pass1234', 'alejandro@example.com', '1987-06-28', 1, 300),
-(10, 'Sofia', 'Diaz', '2223334444', 'sofiapass', 'sofia@example.com', '1993-08-07', 1, 300);
+(1, 'Felipe', 'Cabeza', '3022901384', 'hola1234', 'felipe@gmail.com', '1998-05-05', 3, 100, 100),
+(2, 'Maria', 'Gomez', '9876543210', 'securepass', 'maria@example.com', '1985-05-15', 1, 200, 200),
+(3, 'Carlos', 'Lopez', '5551112233', 'pass123', 'carlos@example.com', '1982-11-30', 2, 300, 300),
+(4, 'Laura', 'Rodriguez', '7778889999', 'mypassword', 'laura@example.com', '1995-07-22', 1, 300, 400),
+(5, 'Pedro', 'Martinez', '1112223333', 'p@ssw0rd', 'pedro@example.com', '1988-04-10', 1, 300, 500),
+(6, 'Ana', 'Santos', '4445556666', 'secure123', 'ana@example.com', '1992-09-18', 1, 300, 600),
+(7, 'Luis', 'Hernandez', '9990001111', 'luispass', 'luis@example.com', '1980-03-05', 2, 300, 700),
+(8, 'Elena', 'Fernandez', '6667778888', 'myp@ss', 'elena@example.com', '1998-12-12', 1, 300, 800),
+(9, 'Alejandro', 'Ramirez', '3334445555', 'pass1234', 'alejandro@example.com', '1987-06-28', 1, 300, 900),
+(10, 'Sofia', 'Diaz', '2223334444', 'sofiapass', 'sofia@example.com', '1993-08-07', 1, 300, 1000);
 
 
 -- Addresses
 
 
-INSERT INTO `address` (`id_address`, `address`, `description`, `neightborhood`, `city_address`, `postal_code`, `owner_address`) 
+INSERT INTO `address` (`id_address`, `address`, `description`, `neightborhood`, `city_address`, `postal_code`, `user_address`) 
 VALUES
 (1, "Carrera 10#12-45", "Dirección principal", "La esperanza", 107, "50000", 1),
 (2, "Diagonal 15#55-46", "Dirección del trabajo", "La isla", 107, "50002", 1),
@@ -1562,7 +1591,7 @@ INSERT INTO social_account_provider (id_social_account_provider, social_account_
 
 -- Social accounts (uid)
 
-INSERT INTO social_account (id_social_account, uid, id_owner) VALUES 
+INSERT INTO social_account (id_social_account, uid, id_user) VALUES 
 (100000, "12345",  1),
 (100001, "12345",  1),
 (100000, "123456789",  2),
@@ -1595,7 +1624,7 @@ VALUES
 -- Pets
 
 INSERT INTO `petmatch_dev`.`pet` 
-(`id_pet`, `owner_pet`, `name`, `gender`, `breed_pet`)
+(`id_pet`, `user_pet`, `name`, `gender`, `breed_pet`)
 VALUES
 (1, 1, 'Buddy', 'M', 2000),
 (2, 2, 'Luna', 'F', 2001),
@@ -1728,9 +1757,9 @@ VALUES
 
 
 
--- Photo Owners
+-- Photo users
 
-INSERT INTO `photo` (`id_photo`, `url`, `description`, `owner_photo`) 
+INSERT INTO `photo` (`id_photo`, `url`, `description`, `user_photo`) 
 VALUES 
 (2, 'images/asset2.jpg', 'Asset 2 description', 1),
 (3, 'images/asset3.jpg', 'Asset 3 description', 2),
