@@ -28,6 +28,16 @@ VALUES
 (1000, '2223334445', 30);
 
 
+-- Agregar los métodos http permitidos
+INSERT INTO `http_method` 
+(`id_http_method`, `http_method`, `description`)
+VALUES
+(10, 'GET', 'Método GET'),
+(20, 'POST', 'Método POST'),
+(30, 'PUT', 'Método PUT'),
+(40, 'UPDATE', 'Método UPDATE'),
+(50, 'DELETE', 'Método DELETE');
+
 -- Country populate
 INSERT INTO `country` (`id_country`, `iso`, `country`, `iso3`, `num_code`, `phone_code`) VALUES
 (1, 'AF', 'Afganistán', 'AFG', 4, 93),
@@ -1852,4 +1862,59 @@ VALUES
 
 
 
+
+INSERT INTO `log` 
+(`user_id_user`, `http_method_id_http_method`, `modulo_id_modulo`, `ip_address`)
+VALUES 
+(1, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 1, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 3, '127.0.0.1'),
+(2, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 2, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 5, '127.0.0.1'),
+(4, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 4, '127.0.0.1'),
+(5, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 7, '127.0.0.1'),
+(6, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 6, '127.0.0.1'),
+(3, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 8, '127.0.0.1'),
+(8, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 1, '127.0.0.1'),
+(9, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 3, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 2, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 5, '127.0.0.1'),
+(2, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 4, '127.0.0.1'),
+(4, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 7, '127.0.0.1'),
+(5, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 6, '127.0.0.1'),
+(6, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 8, '127.0.0.1'),
+(3, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 1, '127.0.0.1'),
+(8, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 3, '127.0.0.1'),
+(9, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 2, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 5, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 4, '127.0.0.1'),
+(2, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 7, '127.0.0.1'),
+(4, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 6, '127.0.0.1'),
+(5, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 8, '127.0.0.1'),
+(6, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 1, '127.0.0.1'),
+(3, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 3, '127.0.0.1'),
+(8, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 2, '127.0.0.1'),
+(9, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 5, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 4, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 7, '127.0.0.1'),
+(2, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 6, '127.0.0.1'),
+(4, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 8, '127.0.0.1'),
+(5, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 1, '127.0.0.1'),
+(6, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 3, '127.0.0.1'),
+(3, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 2, '127.0.0.1'),
+(8, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 5, '127.0.0.1'),
+(9, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 4, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 7, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 6, '127.0.0.1'),
+(2, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 8, '127.0.0.1'),
+(4, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 1, '127.0.0.1'),
+(5, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 3, '127.0.0.1'),
+(6, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 2, '127.0.0.1'),
+(3, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 5, '127.0.0.1'),
+(8, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 4, '127.0.0.1'),
+(9, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 7, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 6, '127.0.0.1'),
+(1, (SELECT id_http_method FROM http_method WHERE http_method='DELETE'), 8, '127.0.0.1'),
+(2, (SELECT id_http_method FROM http_method WHERE http_method='GET'), 1, '127.0.0.1'),
+(4, (SELECT id_http_method FROM http_method WHERE http_method='UPDATE'), 3, '127.0.0.1'),
+(5, (SELECT id_http_method FROM http_method WHERE http_method='POST'), 2, '127.0.0.1');
 
