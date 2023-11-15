@@ -95,7 +95,7 @@ ENGINE = InnoDB;
 -- Table `petmatch_dev`.`document`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `petmatch_dev`.`document` (
-  `id_document` INT NOT NULL,
+  `id_document` INT NOT NULL AUTO_INCREMENT,
   `document` VARCHAR(100) NOT NULL,
   `description` VARCHAR(45) NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -112,6 +112,7 @@ CREATE TABLE IF NOT EXISTS `petmatch_dev`.`document` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
 
 
 -- -----------------------------------------------------
